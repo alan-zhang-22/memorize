@@ -9,24 +9,48 @@ import SwiftUI
 
 struct ContentView: View {
     let emojis = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️","🧙", "🙀", "👹", "😱", "☠️","🍭"]
+    let minimalCards = 1
+    @State var cardCount = 4
     var body: some View {
         VStack {
-            CardsView()
-            Text("Hello, Alan!")
+            CardsView(cardCount: cardCount, emojis: emojis)
+            Spacer()
+            cardCountAdjusters
         }
         .padding()
         .foregroundColor(.orange)
     }
+    
+    var cardCountAdjusters: some View {
+        HStack {
+            //cardRemover
+            cardCountAdjuster(by:-1, symbol: "rectangle.stack.fill.badge.minus")
+            Spacer()
+            cardCountAdjuster(by:1, symbol: "rectangle.stack.fill.badge.plus")
+        }
+        .imageScale(.large)
+        .font(.largeTitle)
+    }
+    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
+        Button(action: {
+            let currentCount = cardCount + offset
+            if !((currentCount < minimalCards) || (currentCount > (emojis.count - 1))) {
+                cardCount += offset
+            }
+        }) {
+            Image(systemName: symbol)
+        }
+    }
 }
 
 struct CardsView: View {
-    let emojis = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️","🧙", "🙀", "👹", "😱", "☠️","🍭"]
-    let minimalCards = 1
-    let initialCards = 4
+    var cardCount:Int
+    var emojis: [String]
     let gridColumns = [GridItem(), GridItem(), GridItem(), GridItem()]
+
     var body: some View{
         LazyVGrid (columns: gridColumns){
-            ForEach (0..<initialCards, id: \.self) { index in
+            ForEach (0..<cardCount, id: \.self) { index in
                 CardView(symbol: emojis[index])
             }
         }
