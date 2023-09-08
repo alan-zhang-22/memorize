@@ -8,40 +8,44 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️","🧙", "🙀", "👹", "😱", "☠️","🍭"]
+    let emojis_themes: [[String]] = [
+        ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙", "🙀", "👹", "😱", "☠️", "🍭"],
+        ["🐛", "🦋", "🐌", "🐞", "🐜", "🪰", "🪲", "🪳", "🦟", "🦗", "🦖", "🐙"],
+        ["🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑"]
+    ]
     let minimalCards = 1
     @State var cardCount = 4
+    @State var theme = 0
     var body: some View {
         VStack {
-            CardsView(cardCount: cardCount, emojis: emojis)
+            Text("Memorize!").font(.largeTitle)
             Spacer()
-            cardCountAdjusters
+            CardsView(cardCount: cardCount, emojis: emojis_themes[theme])
+            Spacer()
+            themeAdjusters
         }
         .padding()
         .foregroundColor(.orange)
     }
     
-    var cardCountAdjusters: some View {
+    var themeAdjusters: some View {
         HStack {
-            //cardRemover
-            cardCountAdjuster(by:-1, symbol: "rectangle.stack.fill.badge.minus")
+            themeAdjuster(themeID: 0)
             Spacer()
-            cardCountAdjuster(by:1, symbol: "rectangle.stack.fill.badge.plus")
-        }
-        .imageScale(.large)
-        .font(.largeTitle)
-    }
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            let currentCount = cardCount + offset
-            if !((currentCount < minimalCards) || (currentCount > (emojis.count - 1))) {
-                cardCount += offset
-            }
-        }) {
-            Image(systemName: symbol)
+            themeAdjuster(themeID: 1)
+            Spacer()
+            themeAdjuster(themeID: 2)
         }
     }
+    
+    func themeAdjuster(themeID: Int) -> some View {
+        Button("Theme" + String(themeID), action: {
+            theme = themeID
+        })
+    }
+    
 }
+
 
 struct CardsView: View {
     var cardCount:Int
